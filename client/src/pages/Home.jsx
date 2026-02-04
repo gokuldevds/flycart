@@ -16,7 +16,8 @@ const Home = () => {
         const fetchProducts = async () => {
             setLoading(true);
             try {
-                let url = `http://localhost:5000/api/products?keyword=${keyword}`;
+                const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+                let url = `${API_URL}/api/products?keyword=${keyword}`;
                 if (category) url += `&category=${category}`;
 
                 const res = await axios.get(url);

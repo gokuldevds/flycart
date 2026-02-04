@@ -41,7 +41,8 @@ const Checkout = () => {
                 totalPrice
             };
 
-            await axios.post('http://localhost:5000/api/orders', orderData, config);
+            const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+            await axios.post(`${API_URL}/api/orders`, orderData, config);
             alert('Order Placed Successfully!');
             navigate('/myorders');
         } catch (err) {

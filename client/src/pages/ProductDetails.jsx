@@ -10,7 +10,8 @@ const ProductDetails = () => {
   const { addToCart } = useContext(CartContext);
 
   useEffect(() => {
-    axios.get(`http://localhost:5000/api/products/${id}`)
+    const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+    axios.get(`${API_URL}/api/products/${id}`)
       .then(res => setProduct(res.data))
       .catch(err => console.log(err));
   }, [id]);

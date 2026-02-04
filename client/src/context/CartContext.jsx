@@ -7,6 +7,7 @@ export const CartProvider = ({ children }) => {
     const [cart, setCart] = useState([]);
     // Generate or retrieve a consistent user ID for this device
     const userId = localStorage.getItem('userId') || `user_${Math.random().toString(36).substr(2, 9)}`;
+    const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
     useEffect(() => {
         if (!localStorage.getItem('userId')) {
@@ -17,7 +18,7 @@ export const CartProvider = ({ children }) => {
 
     const fetchCart = async () => {
         try {
-            const res = await axios.get(`http://localhost:5000/api/cart/${userId}`);
+            const res = await axios.get(`${API_URL}/api/cart/${userId}`);
             if (res.data && res.data.items) {
                 // Normalize items to look like product objects with qty, but handling how DB returns them
                 const normalized = res.data.items.map(item => ({
@@ -44,7 +45,7 @@ export const CartProvider = ({ children }) => {
                 return [...prev, { ...product, qty: 1 }];
             });
 
-            await axios.post(`http://localhost:5000/api/cart/${userId}/add`, { product });
+            await axios.post(`${API_URL}/api/cart/${userId}/add`, { product });
             // Optionally re-fetch to ensure sync: fetchCart();
         } catch (err) {
             console.error("Error adding to cart:", err);
@@ -54,7 +55,7 @@ export const CartProvider = ({ children }) => {
     const removeFromCart = async (id) => {
         try {
             setCart((prev) => prev.filter((item) => item._id !== id));
-            await axios.delete(`http://localhost:5000/api/cart/${userId}/remove/${id}`);
+            await axios.delete(`${API_URL}/api/cart/${userId}/remove/${id}`);
         } catch (err) {
             console.error("Error removing from cart:", err);
         }
@@ -80,7 +81,7 @@ export const CartProvider = ({ children }) => {
             // Wait, if newQty < 1, we didn't update state, so we shouldn't update server.
             const currentItem = cart.find(i => i._id === id);
             if (currentItem && currentItem.qty + delta >= 1) {
-                await axios.post(`http://localhost:5000/api/cart/${userId}/update`, {
+                await axios.post(`${API_URL}/api/cart/${userId}/update`, {
                     productId: id,
                     qty: currentItem.qty + delta
                 });

@@ -12,11 +12,12 @@ const SellerDashboard = () => {
     const handleChange = (e) => setProduct({ ...product, [e.target.name]: e.target.value });
 
     const handleSubmit = async (e) => {
+        const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
         e.preventDefault();
         try {
             const token = localStorage.getItem('token');
             const config = { headers: { Authorization: `Bearer ${token}` } };
-            await axios.post('http://localhost:5000/api/products', product, config);
+            await axios.post(`${API_URL}/api/products`, product, config);
             setMessage('Product added successfully!');
             setProduct({ name: '', description: '', price: '', category: '', image: '' });
         } catch (err) {

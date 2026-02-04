@@ -7,13 +7,15 @@ export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
 
+    const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+
     useEffect(() => {
         const checkLoggedIn = async () => {
             const token = localStorage.getItem('token');
             if (token) {
                 try {
                     const config = { headers: { Authorization: `Bearer ${token}` } };
-                    const res = await axios.get('http://localhost:5000/api/auth/me', config);
+                    const res = await axios.get(`${API_URL}/api/auth/me`, config);
                     setUser(res.data);
                 } catch (err) {
                     localStorage.removeItem('token');
@@ -27,7 +29,7 @@ export const AuthProvider = ({ children }) => {
 
     const login = async (email, password) => {
         try {
-            const res = await axios.post('http://localhost:5000/api/auth/login', { email, password });
+            const res = await axios.post(`${API_URL}/api/auth/login`, { email, password });
             localStorage.setItem('token', res.data.token);
             // Important: Update cart user ID if merging carts is needed, or just refresh
             localStorage.setItem('userId', res.data._id); // Sync cart with real user ID
@@ -40,7 +42,7 @@ export const AuthProvider = ({ children }) => {
 
     const register = async (name, email, password, role) => {
         try {
-            const res = await axios.post('http://localhost:5000/api/auth/register', { name, email, password, role });
+            const res = await axios.post(`${API_URL}/api/auth/register`, { name, email, password, role });
             localStorage.setItem('token', res.data.token);
             localStorage.setItem('userId', res.data._id);
             setUser(res.data);

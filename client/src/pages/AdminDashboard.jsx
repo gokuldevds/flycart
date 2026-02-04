@@ -6,17 +6,19 @@ const AdminDashboard = () => {
 
     useEffect(() => {
         const fetchProducts = async () => {
-            const res = await axios.get('http://localhost:5000/api/products');
+            const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+            const res = await axios.get(`${API_URL}/api/products`);
             setProducts(res.data);
         };
         fetchProducts();
     }, []);
 
     const deleteProduct = async (id) => {
+        const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
         try {
             const token = localStorage.getItem('token');
             const config = { headers: { Authorization: `Bearer ${token}` } };
-            await axios.delete(`http://localhost:5000/api/products/${id}`, config);
+            await axios.delete(`${API_URL}/api/products/${id}`, config);
             setProducts(products.filter(p => p._id !== id));
         } catch (err) {
             alert('Error deleting product');
