@@ -14,6 +14,8 @@ import { CartProvider } from './context/CartContext';
 import { AuthProvider } from './context/AuthContext'; // Import AuthProvider
 import Footer from './components/Footer';
 
+import ProtectedRoute from './components/ProtectedRoute'; // Import ProtectedRoute
+
 function App() {
   return (
     <Router>
@@ -29,10 +31,42 @@ function App() {
                 <Route path="/cart" element={<Cart />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
-                <Route path="/seller-dashboard" element={<SellerDashboard />} />
-                <Route path="/admin-dashboard" element={<AdminDashboard />} />
-                <Route path="/checkout" element={<Checkout />} />
-                <Route path="/myorders" element={<MyOrders />} />
+
+                <Route
+                  path="/seller-dashboard"
+                  element={
+                    <ProtectedRoute roles={['seller', 'admin']}>
+                      <SellerDashboard />
+                    </ProtectedRoute>
+                  }
+                />
+
+                <Route
+                  path="/admin-dashboard"
+                  element={
+                    <ProtectedRoute roles={['admin']}>
+                      <AdminDashboard />
+                    </ProtectedRoute>
+                  }
+                />
+
+                <Route
+                  path="/checkout"
+                  element={
+                    <ProtectedRoute>
+                      <Checkout />
+                    </ProtectedRoute>
+                  }
+                />
+
+                <Route
+                  path="/myorders"
+                  element={
+                    <ProtectedRoute>
+                      <MyOrders />
+                    </ProtectedRoute>
+                  }
+                />
               </Routes>
             </main>
             <Footer />
